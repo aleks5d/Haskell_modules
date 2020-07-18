@@ -74,3 +74,12 @@ toList x = toList' $ arr x
 fromList :: [a] -> Array a
 fromList arr = foldl pushBack empty arr
 
+ofSize' :: Int -> (Node a, Int)
+ofSize' sz | sz <= 1 = (Leaf Nothing, 1)
+           | otherwise = (Node x x, y * 2)
+           where (x, y) = ofSize' $ (sz + 1) `div` 2
+
+ofSize :: Int -> Array a
+ofSize sz | sz < 0 =  error "bad size"
+          | otherwise = Array arr sz cap 
+          where (arr, cap) = ofSize' sz
