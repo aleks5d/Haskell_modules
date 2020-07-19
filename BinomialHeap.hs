@@ -2,14 +2,14 @@ module BinomialHeap where
 
 data Tree a = Tree {rk :: Int, val :: a, to :: [Tree a]}
 
-data BinomialHeap a = BinomialHeap {arr :: [Tree a]}
+data BinomialHeap a = BinomialHeap {minimal :: Maybe a, arr :: [Tree a]}
 
 instance Show a => Show (Tree a) where
     show (Tree _ x []) = show x
     show (Tree _ x xs) = show x ++ "->" ++ show xs
 
 instance Show a => Show (BinomialHeap a) where
-    show x = show $ arr x 
+    show x = show (minimal x) ++ "->" ++ show (arr x)
 
 link :: Ord(a) => Tree a -> Tree a -> Tree a
 link t1@(Tree r1 x1 c1) t2@(Tree r2 x2 c2) | x1 < x2 = Tree (r1 + 1) x1 (t2 : c1)
@@ -39,20 +39,25 @@ removeMinTree (t:ts) | val t < val t' = (t, ts)
                      where (t', ts') = removeMinTree ts
 
 empty :: BinomialHeap a
-empty = BinomialHeap []
+empty = BinomialHeap Nothing []
 
 isEmpty :: BinomialHeap a -> Bool
-isEmpty (BinomialHeap []) = True
+isEmpty (BinomialHeap Nothing []) = True
 isEmpty _ = False
 
 insert :: (Ord a) => BinomialHeap a -> a -> BinomialHeap a
-insert (BinomialHeap ts) x = BinomialHeap $ insertTree (Tree 0 x []) ts
+insert (BinomialHeap Nothing ts) y = BinomialHeap (Just y) ts
+insert (BinomialHeap (Just x) ts) y = 
+                    if x < y 
+                    then BinomialHeap (Just x) $ insertTree (Tree 0 y []) ts
+                    else BinomialHeap (Just y) $ insertTree (Tree 0 x []) ts
 
 getMin :: (Ord a) => BinomialHeap a -> a
-getMin (BinomialHeap []) = error "empty heap"
-getMin (BinomialHeap ts) = val $ fst $ removeMinTree ts
+getMin (BinomialHeap Nothing _) = error "empty heap"
+getMin (BinomialHeap (Just x) _) = x
 
 deleteMin :: (Ord a) => BinomialHeap a -> BinomialHeap a
-deleteMin (BinomialHeap []) = BinomialHeap []
-deleteMin (BinomialHeap ts) = BinomialHeap $ mergeTree (reverse ts1) ts2
-                where (Tree _ x ts1, ts2) = removeMinTree ts
+deleteMin (BinomialHeap Nothing []) = BinomialHeap Nothing []
+deleteMin (BinomialHeap (Just x) []) = BinomialHeap Nothing []
+deleteMin (BinomialHeap (Just x) ts) = BinomialHeap (Just y) $ mergeTree (reverse ts1) ts2
+            where (Tree _ y ts1, ts2) = removeMinTree ts
