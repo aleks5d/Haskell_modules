@@ -1,1 +1,1 @@
-import MergeSort
+import SuffixArray
