@@ -1,1 +1,1 @@
-import SuffixArray
+import IntMap
