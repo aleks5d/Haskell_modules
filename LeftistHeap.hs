@@ -60,3 +60,12 @@ fromList xs = help $ map (\x -> Just $ LeftistHeap 1 x Nothing Nothing) xs
         cut2 [] = []
         cut2 [x] = [x]
         cut2 (x : (y : xs)) = merge x y : cut2 xs
+
+{-
+Leftist heap for any ordered type
+insert   : O(log(n)) real time
+findMin  : O(1)      real time
+deleteMin: O(log(n)) real time
+fromList : O(n)      real time
+merge    : O(log(n)) real time
+-}

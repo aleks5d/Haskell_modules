@@ -47,3 +47,10 @@ erase (Just x) y | me x == y = UnbalancedMap.merge (l x) (r x)
                                                                     (me x) (val x)
                  | otherwise = Just $ UnbalancedMap (erase (l x) y) (r x) 
                                                                     (me x) (val x)
+
+{-
+Unbalanced Map a->b for any ordered a and any b
+insert: O(n) worst case
+erase : O(n) worst case
+find  : O(n) worst case
+-}                                                            

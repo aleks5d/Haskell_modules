@@ -83,3 +83,7 @@ ofSize :: Int -> Array a
 ofSize sz | sz < 0 =  error "bad size"
           | otherwise = Array arr sz cap 
           where (arr, cap) = ofSize' sz
+
+{-
+
+-}

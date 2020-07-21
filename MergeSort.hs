@@ -16,3 +16,8 @@ mergeSort [] = []
 mergeSort [x] = [x]
 mergeSort xs = merge (mergeSort lpart) (mergeSort rpart)
          where (lpart, rpart) = split xs
+
+{-
+Merge sorting algorithm for any Ordered type
+mergeSort: O(n log(n)) real time
+-}

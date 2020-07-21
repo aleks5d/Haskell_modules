@@ -22,3 +22,9 @@ get (IntMap Nothing _ _) 0 = error "empty index"
 get map 0 = fromJust $ val map
 get map n = if n `mod` 2 == 1 then get (r map) (n `div` 2)
                               else get (l map) (n `div` 2)
+
+{-
+IntMap Int -> a for any type
+put: O(log(key)) real time
+get: O(log(key)) real time
+-}

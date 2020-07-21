@@ -61,3 +61,10 @@ deleteMin (BinomialHeap Nothing []) = BinomialHeap Nothing []
 deleteMin (BinomialHeap (Just x) []) = BinomialHeap Nothing []
 deleteMin (BinomialHeap (Just x) ts) = BinomialHeap (Just y) $ mergeTree (reverse ts1) ts2
             where (Tree _ y ts1, ts2) = removeMinTree ts
+
+{-
+Binomial Heap for any ordered type
+insert   : O(log(n)) real time
+getMin   : O(1)      real time
+deleteMin: O(log(n)) real time
+-}

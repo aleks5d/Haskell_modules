@@ -40,3 +40,10 @@ erase Nothing y = Nothing
 erase (Just x) y | me x == y = merge (l x) (r x)
                  | me x < y = Just $ UnbalancedSet (l x) (erase (r x) y) (me x)
                  | otherwise = Just $ UnbalancedSet (erase (l x) y) (r x) (me x)
+
+{-
+Unbalanced set for any ordered type
+insert: O(n) worst case
+erase : O(n) worst case
+find  : O(n) worst case
+-}

@@ -31,3 +31,8 @@ buildLog'2 xs = tail $ snd $ unzip $ mergeSort $ zip (help 1 xs) [0..length xs]
 
 suffixArray :: [Char] -> [Int]
 suffixArray str = buildLog'2 $ map ord str ++ [0]
+
+{-
+SuffixArray for string
+buildLog'2 : O(n log^2(n))
+-}

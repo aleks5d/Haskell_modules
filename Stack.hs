@@ -33,3 +33,11 @@ pop (Stack _ (Just x) _) = x
 
 push :: Stack a -> a -> Stack a
 push x y = Stack (Just y) (Just x) (size x + 1)
+
+{-
+any type Stack
+push: O(1) real time
+top : O(1) real time
+pop : O(1) real time
+size: O(1) real time
+-}
