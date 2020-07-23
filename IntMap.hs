@@ -23,6 +23,13 @@ get map 0 = fromJust $ val map
 get map n = if n `mod` 2 == 1 then get (r map) (n `div` 2)
                               else get (l map) (n `div` 2)
 
+toList :: Int -> Int -> a -> IntMap a -> [a]
+toList from to def map | from > to = []
+                       | otherwise = (f' def $ maybeGet map from) :
+                                             toList (from + 1) to def map
+                       where f' def Nothing = def
+                             f' _ (Just x) = x
+
 {-
 IntMap Int -> a for any type
 put: O(log(key)) real time
