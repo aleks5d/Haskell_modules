@@ -1,5 +1,1 @@
-import SegmentTree
-
-{-
-some ideas?
--}
+import FastPower
