@@ -34,5 +34,5 @@ suffixArray str = buildLog'2 $ map ord str ++ [0]
 
 {-
 SuffixArray for string
-buildLog'2 : O(n log^2(n))
+buildLog'2 :: string -> suffix array of this string, O(n log^2(n))
 -}

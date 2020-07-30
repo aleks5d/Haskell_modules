@@ -64,7 +64,9 @@ deleteMin (BinomialHeap (Just x) ts) = BinomialHeap (Just y) $ mergeTree (revers
 
 {-
 Binomial Heap for any ordered type
-insert   : O(log(n)) real time
-getMin   : O(1)      real time
-deleteMin: O(log(n)) real time
+empty     :: new heap create empty heap,              O(1)
+isEmpty   :: curr heap -> is heap empty,              O(1)
+insert    :: curr heap -> value -> new heap,          O(log(n))
+getMin    :: curr heap -> minimum value from heap,    O(1)
+deleteMin :: curr heap -> new heap, remove min value, O(log(n))
 -}

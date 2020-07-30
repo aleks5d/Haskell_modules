@@ -40,6 +40,11 @@ insert (Just x) y v | me x == y = Just $ x{val = v}
                     | otherwise = Just $ UnbalancedMap (l x) (insert (r x) y v) 
                                                                     (me x) (val x)
 
+insertP :: (Ord a) => Maybe (UnbalancedMap a b) -> (a, b)
+                                                    -> Maybe (UnbalancedMap a b)
+insertP map (x, y) = insert map x y
+
+
 erase :: (Ord a) => Maybe (UnbalancedMap a b) -> a -> Maybe (UnbalancedMap a b)
 erase Nothing y = Nothing
 erase (Just x) y | me x == y = UnbalancedMap.merge (l x) (r x)
@@ -50,7 +55,11 @@ erase (Just x) y | me x == y = UnbalancedMap.merge (l x) (r x)
 
 {-
 Unbalanced Map a->b for any ordered a and any b
-insert: O(n) worst case
-erase : O(n) worst case
-find  : O(n) worst case
+empty   :: new map, create map, O(1)
+insert  :: curr map -> key -> value -> new map, O(n) worst case
+insertP :: curr map -> (key, value) -> new map, O(n) worst case
+erase   :: curr map -> key -> new map,          O(n) worst case
+find    :: curr map -> key -> Maybe value, Nothing - value wasn't inserted 
+                                           Just x  - value was inserted and it's x
+                                           inO(n) worst case
 -}                                                            

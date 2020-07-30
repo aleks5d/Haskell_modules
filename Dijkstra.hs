@@ -37,5 +37,5 @@ dijkstra gr start = IntMap.toList 1 (Graph.size gr) (-1) $ calcDists gr start
 
 {-
 dijkstra get Graph, start vertex and return list of dists, where -1 if you cant reach it
-O((n + m) log (n + m))
+dijkstra :: Graph -> start vertex -> list of dists, O((n + m) log (n + m))
 -}

@@ -31,8 +31,16 @@ toList from to def map | from > to = []
                              f' _ (Just x) = x
 
 {-
-IntMap Int -> a for any type
-put: O(log(key)) real time
-get: O(log(key)) real time
-toList: left bound -> right bound -> default value -> intMap
+IntMap - data structure to storage (a type) values by not negative Int / Integer keys
+empty    :: IntMap of (a type)
+put      :: curr IntMap -> index -> new value -> new IntMap
+maybeGet :: curr IntMap -> index -> Nothing - value wasn't inserted
+									Just x  - value was inserted and it's x
+get      :: curr IntMap -> index -> value   - if value wasn't inserted will throw error
+toList   :: left bound -> right bound -> default value -> curr IntMap -> [values]
+	form list of values with keys in [left, right]. if it's no such value then use default
+
+toList work in O((right - left) * log(right)) time
+other operations in O(log(key))
+
 -}

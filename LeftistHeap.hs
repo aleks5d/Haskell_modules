@@ -63,9 +63,10 @@ fromList xs = help $ map (\x -> Just $ LeftistHeap 1 x Nothing Nothing) xs
 
 {-
 Leftist heap for any ordered type
-insert   : O(log(n)) real time
-findMin  : O(1)      real time
-deleteMin: O(log(n)) real time
-fromList : O(n)      real time
-merge    : O(log(n)) real time
+empty    :: heap
+insert   :: curr heap -> value -> new heap, O(log(n)) time
+findMin  :: curr heap -> minimum in heap  , O(1)      time
+deleteMin:: curr heap -> new heap,          O(log(n)) time
+fromList :: list of values -> new heap,     O(n)      time
+merge    :: heap1 -> heap2 -> new heap,     O(log(n)) time
 -}

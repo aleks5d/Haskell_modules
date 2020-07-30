@@ -43,7 +43,8 @@ erase (Just x) y | me x == y = merge (l x) (r x)
 
 {-
 Unbalanced set for any ordered type
-insert: O(n) worst case
-erase : O(n) worst case
-find  : O(n) worst case
+empty  :: new set, create empty set,             O(1)
+insert :: curr set -> value -> new set,          O(n) worst case
+erase  :: curr set -> value -> new set,          O(n) worst case
+find   :: curr set -> value -> is value in set,  O(n) worst case
 -}

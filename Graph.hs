@@ -42,8 +42,16 @@ size :: Graph a -> Int
 size = sz
 
 {-
-fW for weighted function
-f  for unweighted function (weight = 1)
-
-in O(log(n)) real time
+data structure for weighted graphs
+weights can be Int or Integer
+empty         :: create empty graph
+getEdgesFromW :: curr graph -> vertex -> list of weighted edges from vertex 
+getEdgesFrom  :: curr graph -> vertex -> list of edges from vertex 
+addEdgeW      :: curr graph -> (from, to, w) -> new graph, append edge from -> to (w)
+addEdge       :: curr graph -> (from, to)    -> new graph, append edge from -> to (1)
+addEdgeBothW  :: curr graph -> (v1, v2, w)   -> new graph, append edge v2 -> v1 (w)
+                                                           append edge v1 -> v2 (w)
+addEdgeBoth   :: curr graph -> (v1, v2)      -> new graph, append edge v2 -> v1 (1)
+                                                           append edge v1 -> v2 (1)
+size          :: curr graph -> max nubmer of vertex
 -}

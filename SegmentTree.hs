@@ -62,8 +62,11 @@ fromList :: [a] -> (a -> a -> a) -> SegmentTree a
 fromList xs f = foldl putP (empty (length xs) f) $ zip [1..] xs 
 
 {-
-1-numeration
-operation in O(log(n)) real time
-get on [l, r] = arr[l] `f` arr[l + 1] `f` ... `f` arr[r]
-put - update in index
+SegmentTree with 1-numeration
+empty    :: size -> (+) function -> empty segment tree with (+) frunction
+put      :: tree -> index -> value -> new tree, update value at index position, O(log(n))
+putP     :: tree -> (index, value) -> new tree, update value at index position, O(log(n))
+get      :: tree -> left -> right -> value, get tree[left] + ... + tree[right], O(log(n))
+getP     :: tree -> (left, right) -> value, get tree[left] + ... + tree[right], O(log(n))
+fromList :: list of values -> (+) frunction -> new tree, where tree[i] = list[i]
 -}

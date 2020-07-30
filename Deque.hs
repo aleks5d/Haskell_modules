@@ -80,10 +80,12 @@ popFront (Deque l r fl fr) | not $ Stack.isEmpty l =
 
 {-
 Deque for any type by 2 stack
-pushBack : O(1) real time
-pushFront: O(1) real time
-back     : O(1) real time
-front    : O(1) real time
-popFront : O(1) amortized time, O(n) worst case
-popBack  : O(1) amortized time, O(n) worst case
+empty     :: new deque, create empty deque,     O(1)
+isEmpty   :: curr deque -> is this deque empty, O(1)
+pushBack  :: curr deque -> value -> new deque,  O(1) real time
+pushFront :: curr deque -> value -> new deque,  O(1) real time
+back      :: curr deque -> back value,          O(1) real time
+front     :: curr deque -> fron value,          O(1) real time
+popFront  :: curr deque -> new deque,           O(1) amortized time, O(n) worst case
+popBack   :: curr deque -> new deque,           O(1) amortized time, O(n) worst case
 -}

@@ -9,6 +9,7 @@ fastPower f x n | n <= 0 =  error "bad power"
                     hlf = fastPower f x (n `div` 2)
 
 {-
+fastPower :: base -> power -> function of * 
 fastPower x n f = x `f` x `f` x ... `f` x. n times
 in O(log(n)) time
 `f` must be associatime 

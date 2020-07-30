@@ -36,8 +36,10 @@ push x y = Stack (Just y) (Just x) (size x + 1)
 
 {-
 any type Stack
-push: O(1) real time
-top : O(1) real time
-pop : O(1) real time
-size: O(1) real time
+empty   :: create empty stack
+isEmpty :: curr stack -> is this stack empty
+push    :: curr stack -> value -> new stack, append value to stack, O(1) real time
+top     :: curr stack -> top value of this stack,                   O(1) real time
+pop     :: curr stack -> new stack, remove top element,             O(1) real time
+size    :: curr stack -> size of this stack,                        O(1) real time
 -}

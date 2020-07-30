@@ -43,8 +43,9 @@ pop (Queue f s fr) | not $ Stack.isEmpty f = needRealloc $ Queue (Stack.pop f) s
 
 {-
 First in first out queue by 2 stack
-push : O(1) real time
-front: O(1) real time
-pop  : O(1) amortized time. O(n) worst case
-size : O(1) real time
+empty :: new queue
+push  :: curr queue -> val -> new queue, O(1) real time
+front :: curr queue -> front value,      O(1) real time
+pop   :: curr queue -> new queue,        O(1) amortized time. O(n) worst case
+size  :: curr queue -> size of queue,    O(1) real time
 -}
