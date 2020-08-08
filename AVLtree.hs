@@ -164,8 +164,6 @@ merge ltree rtree | (h rtree) == 0 = ltree
                   | getMin ltree > getMax rtree = fastMerge rtree ltree
                   | size ltree <= size rtree     = longMerge     ltree rtree
                   | otherwise                    = longMerge     rtree ltree
-                  where
-                    newSz = size ltree + size rtree
 
 split :: Ord(a) => Node a -> a -> (Node a, Node a)
 split t x | h t == 0 = (empty, empty)
