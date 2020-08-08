@@ -2,134 +2,179 @@ module AVLtree where
 
 import Data.Maybe
 
-data Node a = Node{l :: Node a, r :: Node a, val :: Maybe a, h :: Int}
-data AVLtree a = AVLtree{tree :: Node a, sz :: Int}
+data Node a = Node{l :: Node a, r :: Node a, val :: Maybe a, h :: Int, sz :: Int}
 
 instance Show(a) => Show (Node a) where
-    show (Node _ _ Nothing _) = ""
-    show (Node ltree rtree (Just me) he) = "[" ++ show ltree ++ 
+    show (Node _ _ Nothing _ _) = ""
+    show (Node ltree rtree (Just me) he sz) = "[" ++ show ltree ++ 
                                             "](" ++ show me ++
                                             "," ++ show he ++
+                                            "," ++ show sz ++
                                             ")[" ++ show rtree ++ "]"
 
-instance Show(a) => Show (AVLtree a) where
-    show (AVLtree tree _) = "AVLTREE: " ++ show tree 
+empty :: Ord(a) => Node a
+empty = Node empty empty Nothing 0 0 
 
-emptyNode :: Node a
-emptyNode = Node emptyNode emptyNode Nothing 0
+size :: Ord(a) => Node a -> Int
+size t = sz t
 
-empty :: Ord(a) => AVLtree a
-empty = AVLtree emptyNode 0
+updNode :: Ord(a) => Node a -> Node a
+updNode tree@(Node _ _ Nothing _ _) = empty
+updNode tree@(Node ltree rtree _ _ _) = tree{h = 1 + h ltree `max` h rtree, 
+                                             sz = 1 + sz ltree + sz rtree}
 
-size :: AVLtree a -> Int
-size = sz
-
-updHeight :: Node a -> Node a
-updHeight tree@(Node _ _ Nothing _) = emptyNode
-updHeight tree@(Node ltree rtree _ _) = tree{h = 1 + h ltree `max` h rtree}
-
-smallLeft :: Node a -> Node a
-smallLeft tree@(Node ltree rtree _ _) = rtree{l = tree'}
+smallLeft :: Ord(a) => Node a -> Node a
+smallLeft tree@(Node ltree rtree _ _ _) = rtree{l = tree'}
     where
-        tree' = updHeight $ tree{r = l rtree}
+        tree' = updNode $ tree{r = l rtree}
 
-smallRight :: Node a -> Node a
-smallRight tree@(Node ltree rtree _ _) = ltree{r = tree'}
+smallRight :: Ord(a) => Node a -> Node a
+smallRight tree@(Node ltree rtree _ _ _) = ltree{r = tree'}
     where
-        tree' = updHeight $ tree{l = r ltree}
+        tree' = updNode $ tree{l = r ltree}
 
-bigLeft :: Node a -> Node a
-bigLeft tree@(Node ltree rtree _ _) = smallLeft tree'
+bigLeft :: Ord(a) => Node a -> Node a
+bigLeft tree@(Node ltree rtree _ _ _) = smallLeft tree'
     where
-        tree' = updHeight $ tree{r = smallRight rtree}
+        tree' = updNode $ tree{r = smallRight rtree}
 
-bigRight :: Node a -> Node a
-bigRight tree@(Node ltree rtree _ _) = smallRight tree'
+bigRight :: Ord(a) => Node a -> Node a
+bigRight tree@(Node ltree rtree _ _ _) = smallRight tree'
     where
-        tree' = updHeight $ tree{l = smallLeft ltree}
+        tree' = updNode $ tree{l = smallLeft ltree}
 
-lBalance :: Node a -> Node a
-lBalance tree@(Node ltree rtree _ _) | h (l rtree) - h (r rtree) <= 0 = smallLeft tree
-                                        | otherwise = bigLeft tree
+lBalance :: Ord(a) => Node a -> Node a
+lBalance tree@(Node ltree rtree _ _ _) | h (l rtree) - h (r rtree) <= 0 = smallLeft tree
+                                       | otherwise = bigLeft tree
 
-rBalance :: Node a -> Node a
-rBalance tree@(Node ltree rtree _ _) | h (r ltree) - h (l ltree) <= 0 = smallRight tree
-                                        | otherwise = bigRight tree
+rBalance :: Ord(a) => Node a -> Node a
+rBalance tree@(Node ltree rtree _ _ _) | h (r ltree) - h (l ltree) <= 0 = smallRight tree
+                                       | otherwise = bigRight tree
 
-balance :: Node a -> Node a
-balance tree@(Node _ _ Nothing _) = emptyNode
-balance tree@(Node ltree rtree me _) | h ltree - h rtree == 2 = updHeight $ rBalance tree
-                                     | h rtree - h ltree == 2 = updHeight $ lBalance tree
-                                     | otherwise = tree
+balance :: Ord(a) => Node a -> Node a
+balance tree@(Node _ _ Nothing _ _) = empty
+balance tree@(Node ltree rtree me _ _) | h ltree - h rtree == 2 = updNode $ rBalance tree
+                                       | h rtree - h ltree == 2 = updNode $ lBalance tree
+                                       | otherwise = tree
 
-findNode :: Ord(a) => Node a -> a -> Bool
-findNode (Node ltree rtree me h) x | h == 0 = False
-                                   | y == x = True
-                                   | y < x = findNode rtree x
-                                   | y > x = findNode ltree x
-                                   where 
-                                       y = fromJust me
+find :: Ord(a) => Node a -> a -> Bool
+find (Node ltree rtree me h _) x | h == 0 = False
+                                 | y == x = True
+                                 | y < x = find rtree x
+                                 | y > x = find ltree x
+                                 where 
+                                     y = fromJust me
 
-find :: Ord(a) => AVLtree a -> a -> Bool
-find (AVLtree _ 0) _ = False
-find (AVLtree tree _) x = findNode tree x
+next :: Ord(a) => Node a -> a -> Maybe a
+next (Node ltree rtree me h _) x | h == 0 = Nothing
+                                 | y <= x = next rtree x
+                                 | z == Nothing = Just y
+                                 | otherwise = z
+                                 where
+                                   y = fromJust me
+                                   z = next ltree x
 
-nextNode :: Ord(a) => Node a -> a -> Maybe a
-nextNode (Node ltree rtree me h) x | h == 0 = Nothing
-                                   | y <= x = nextNode rtree x
-                                   | z == Nothing = Just y
-                                   | otherwise = z
-                                   where
-                                      y = fromJust me
-                                      z = nextNode ltree x
+prev :: Ord(a) => Node a -> a -> Maybe a
+prev (Node ltree rtree me h _) x | h == 0 = Nothing
+                                 | y >= x = prev ltree x
+                                 | z == Nothing = Just y
+                                 | otherwise = z
+                                 where
+                                    y = fromJust me
+                                    z = prev rtree x
 
-prevNode :: Ord(a) => Node a -> a -> Maybe a
-prevNode (Node ltree rtree me h) x | h == 0 = Nothing
-                                   | y >= x = prevNode ltree x
-                                   | z == Nothing = Just y
-                                   | otherwise = z
-                                   where
-                                      y = fromJust me
-                                      z = prevNode rtree x
-
-next :: Ord(a) => AVLtree a -> a -> Maybe a
-next (AVLtree tree _) x = nextNode tree x
-
-prev :: Ord(a) => AVLtree a -> a -> Maybe a
-prev (AVLtree tree _) x = prevNode tree x
-
-insertNode :: Ord(a) => Node a -> a -> Node a
-insertNode (Node _ _ Nothing _) x = Node emptyNode emptyNode (Just x) 1
-insertNode tree@(Node ltree rtree me _) x = updHeight $ tree'
+insert :: Ord(a) => Node a -> a -> Node a
+insert (Node _ _ Nothing _ _) x = Node empty empty (Just x) 1 1
+insert tree@(Node ltree rtree me _ _) x = updNode $ tree'
     where
         y = fromJust me
-        tree'' = if y < x then tree{r = insertNode rtree x}
-                          else tree{l = insertNode ltree x}
+        tree'' = if y < x      then tree{r = insert rtree x}
+                 else if y > x then tree{l = insert ltree x}
+                      else tree
         tree' = balance tree''
 
-eraseNode :: Ord(a) => Node a -> a -> Node a
-eraseNode t@(Node ltree rtree me _) x | y < x  = updHeight $ balance
-                                                t{r = eraseNode rtree x}
-                                      | y > x  = updHeight $ balance
-                                                t{l = eraseNode ltree x}
-                                      | h ltree + h rtree == 0 = emptyNode 
-                                      | h ltree > h rtree = treeL{val = prv}
-                                      | h ltree < h rtree = treeR{val = nxt}
-                                      where
-                                          y = fromJust me
-                                          nxt = nextNode t x
-                                          prv = prevNode t x
-                                          treeL = eraseNode t $ fromJust prv
-                                          treeR = eraseNode t $ fromJust nxt
+erase :: Ord(a) => Node a -> a -> Node a
+erase t@(Node ltree rtree me _ _) x | h t == 0 = empty
+                                    | y < x  = updNode $ balance
+                                              t{r = erase rtree x}
+                                    | y > x  = updNode $ balance
+                                              t{l = erase ltree x}
+                                    | h ltree + h rtree == 0 = empty 
+                                    | h ltree >= h rtree = updNode $ balance
+                                              treeL{val = prv}
+                                    | h ltree <  h rtree = updNode $ balance 
+                                              treeR{val = nxt}
+                                    where
+                                        y = fromJust me
+                                        nxt = next t x
+                                        prv = prev t x
+                                        treeL = erase t $ fromJust prv
+                                        treeR = erase t $ fromJust nxt
 
-insert :: Ord(a) => AVLtree a -> a -> AVLtree a
-insert t@(AVLtree tree sz) x | find t x = t
-                             | otherwise = AVLtree (insertNode tree x) $ sz + 1
+getMax :: Ord(a) => Node a -> Maybe a
+getMax (Node _ rtree me h _) | h == 0 = Nothing
+                             | x == Nothing = me
+                             | otherwise = x
+                             where
+                                 x = getMax rtree
 
-erase :: Ord(a) => AVLtree a -> a -> AVLtree a
-erase t@(AVLtree tree sz) x | find t x = AVLtree (eraseNode tree x) $ sz - 1
-                            | otherwise = t
+getMin :: Ord(a) => Node a -> Maybe a
+getMin (Node ltree _ me h _) | h == 0 = Nothing
+                             | x == Nothing = me
+                             | otherwise = x
+                             where
+                                 x = getMin ltree
 
+toList :: Ord(a) => Node a -> [a]
+toList (Node lt rt me _ _) = case me of
+                             Nothing -> []
+                             Just x -> toList lt ++ [x] ++ toList rt
+
+longMerge :: Ord(a) => Node a -> Node a -> Node a
+longMerge lt rt = foldl insert rt $ toList lt
+
+rMergeVal :: Ord(a) => Node a -> Node a -> Maybe a -> Node a
+rMergeVal lt rt x | h lt >= h rt = updNode $ Node lt rt x 0 0
+             | otherwise = updNode . balance $ rt{l = rMergeVal lt (l rt) x} 
+
+rMerge :: Ord(a) => Node a -> Node a -> Node a
+rMerge lt rt = rMergeVal lt' rt el
+    where
+        el  = getMax lt
+        lt' = erase lt $ fromJust el
+
+lMergeVal :: Ord(a) => Node a -> Node a -> Maybe a -> Node a
+lMergeVal lt rt x | h lt <= h rt = updNode $ Node lt rt x 0 0
+                  | otherwise = updNode . balance $ lt{r = lMergeVal (r lt) rt x}
+
+lMerge :: Ord(a) => Node a -> Node a -> Node a
+lMerge lt rt = lMergeVal lt rt' el
+    where
+        el = getMin rt
+        rt' = erase rt $ fromJust el
+
+fastMerge :: Ord(a) => Node a -> Node a -> Node a
+fastMerge lt rt | h lt <= h rt = rMerge lt rt
+                | otherwise    = lMerge lt rt
+
+merge :: Ord(a) => Node a -> Node a -> Node a
+merge ltree rtree | (h rtree) == 0 = ltree
+                  | (h ltree) == 0 = rtree
+                  | getMin rtree > getMax ltree = fastMerge ltree rtree
+                  | getMin ltree > getMax rtree = fastMerge rtree ltree
+                  | size ltree <= size rtree     = longMerge     ltree rtree
+                  | otherwise                    = longMerge     rtree ltree
+                  where
+                    newSz = size ltree + size rtree
+
+split :: Ord(a) => Node a -> a -> (Node a, Node a)
+split t x | h t == 0 = (empty, empty)
+          | y > x = (ll, rMergeVal lr (r t) (val t))
+          | otherwise = (lMergeVal (l t) rl (val t), rr)
+          where
+            (ll, lr) = split (l t) x
+            (rl, rr) = split (r t) x
+            y = fromJust . val $ t
 
 {-
 AVL tree for any ordered type
@@ -139,4 +184,14 @@ erase  :: curr tree -> value -> new tree,                  O(log(n))
 find   :: curr tree -> value -> is value in tree,          O(log(n))
 next   :: curr tree -> x     -> minimal value in tree > x, O(log(n))
 prev   :: curr tree -> x     -> maximum value in tree < x, O(log(n))
+getMin :: curr tree -> minimum value in tree,              O(log(n))
+getMax :: curr tree -> maximum value in tree,              O(log(n))
+merge  :: frst tree -> scnd tree -> frst tree + scnd tree, O(log(n))
+work if all keys of one tree less than keys of second one
+otherwise work in O((min size) * log(max size))
+split  :: curr tree -> key -> (ltree,tree),                O(log(n))
+ltree = all keys <= key
+rtree = all keys >  key
+toList :: curr tree -> [a], list of keys                   O(n)
+
 -}
